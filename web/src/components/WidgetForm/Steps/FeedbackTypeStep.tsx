@@ -19,7 +19,7 @@ export function FeedbackTypeStep({onFeedbackTypeChanged}: FeedbackTypeStepProps)
             </header>
 
 
-            <div className="flex py-8 gap-2 w-full">
+            <div className="flex  py-8 gap-1 w-full ">
                 {Object.entries(feedbackTypes).map(([key, value])=> {
                    return(
                        <button
