@@ -1,4 +1,3 @@
-
 import bugImageUrl from '../../assets/bug.svg';
 import ideaImageUrl from '../../assets/idea.svg';
 import otherImageUrl from '../../assets/thought.svg';
@@ -9,7 +8,7 @@ import {FeedbackSuccessStep} from "./Steps/FeedbackSuccessStep";
 
 export const feedbackTypes = {
     BUG: {
-        title: 'Problema',
+        title: "Problema",
         image: {
             source: bugImageUrl,
             alt: 'Imagem de um inseto'
