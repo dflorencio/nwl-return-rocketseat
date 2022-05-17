@@ -1,6 +1,6 @@
 
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
     View,
     TextInput,
@@ -9,24 +9,73 @@ import {
     TouchableOpacity
  } from 'react-native';
  import { ArrowLeft } from 'phosphor-react-native';
+ import{ captureScreen } from 'react-native-view-shot';
  import { theme } from '../../theme'
  
-
+import * as FileSystem from 'expo-file-system';
 import { styles } from './styles';
 import { FeedbackType }  from '../../components/widget';
-import { ScreeshotButton }  from '../../components/ScreeshotButton';
+import { ScreenshotButton }  from '../ScreenshotButton';
+import { Button }  from '../../components/Button';
 import { feedbackTypes } from '../../utils/feedbackTypes'
+import { api } from '../../libs/api';
+
 
 interface Props {
     feedbackType: FeedbackType;
+    onFeedbackCanceled: () =>void;
+    onFeedbackSent: () =>void;
 };
 
-export function Form( {feedbackType}: Props) {
+export function Form( {feedbackType, onFeedbackCanceled, onFeedbackSent}: Props) {
+
+    const [isSendingFeedback, setIsSendingFeedback] = useState(false);
+    const [ screenshot, setScreenshot ] = useState<string | null>(null);
+    const [comment, setComment] = useState('')
+
     const feedbackTypeInfo = feedbackTypes[feedbackType];
+
+    function handleSreenshot(){
+        captureScreen({
+            format: 'jpg',
+            quality: 0.8
+        })
+        .then(uri => setScreenshot(uri))
+        .catch(error => console.log(error));
+    }
+
+    function handleSreenshotRemove() {
+        setScreenshot(null);
+    }
+    
+
+    async function handleSendFeedback(){
+        if(isSendingFeedback){
+            return;
+        }
+        setIsSendingFeedback(true);
+
+        const screenshotBase64 = screenshot && FileSystem
+        try{
+            await api.post('/feedbacks', {
+                type: feedbackType,
+                screenshot,
+                comment,
+            });
+            onFeedbackSent();
+        }catch(error){
+            console.log(error);
+            setIsSendingFeedback(false);
+        }
+
+    } 
+
+
+
   return (
     <View style={styles.container}>
         <View style={styles.header}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onFeedbackCanceled}>
                 <ArrowLeft
                     size={24}
                     weight="bold"
@@ -53,14 +102,23 @@ export function Form( {feedbackType}: Props) {
             style={styles.input}
             placeholder="Algo não esta funcionando bem? Queremos Corrigir. Conte com detalhes o que está acontendo..."
             placeholderTextColor={theme.colors.text_secondary}
+            autoCorrect={false}
+            onChangeText={setComment}
             />
 
             <View style={styles.footer}>
-                <ScreeshotButton
-                    onTakeShot={() => { }}
-                    onRemoveShot={() => { }}
-                    screeshot=""
+                <ScreenshotButton
+                    onTakeShot={handleSreenshot}
+                    onRemoveShot={handleSreenshotRemove}
+                    screenshot={screenshot}
                     />
+
+            <Button
+            onPress={handleSendFeedback}
+                isLoading={isSendingFeedback}
+            />
+
+
             </View>
 
     </View>

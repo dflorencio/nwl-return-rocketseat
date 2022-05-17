@@ -13,7 +13,7 @@ interface Props {
 }
 
 
-export function ScreeshotButton({screenshot, onTakeShot, onRemoveShot }: Props) {
+export function ScreenshotButton({screenshot, onTakeShot, onRemoveShot }: Props) {
   return (
     <TouchableOpacity 
         style={styles.container}
@@ -22,13 +22,21 @@ export function ScreeshotButton({screenshot, onTakeShot, onRemoveShot }: Props) 
             {
                 screenshot 
                 ?
-                <Trash 
+                <View>
+                  <Image 
+                    style={styles.image}
+                    source={{ uri: screenshot }}
+                  
+                  />
+                
+                  <Trash 
                     size={22}
                     color={theme.colors.text_secondary}
                     weight="fill"
                     style={styles.removeIcon}
                     />
-                    :
+                </View>
+                :
                     <Camera 
                     size={24}
                     color={theme.colors.text_primary}
