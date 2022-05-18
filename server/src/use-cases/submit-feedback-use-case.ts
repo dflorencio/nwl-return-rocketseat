@@ -40,9 +40,10 @@ export class SubmitFeedbackUseCase{
         await this.mailAdapter.sendMail({
             subject: 'Novo Feedback',
             body: [
-                `<div style="font-famuly: sans-serif; font-size: 14px; color: #111;">`,
-                `<p>tipo de de feedback: ${type}</p>`,
+                `<div style="font-famuly: sans-serif; font-size: 16px; color: #111;">`,
+                `<p>Tipo de de feedback: ${type}</p>`,
                 `<p>Comentários: ${comment}</p>`,
+                `<img src="${screenshot}"/>`,
                 `</div>`
             ].join('\n')
         })
